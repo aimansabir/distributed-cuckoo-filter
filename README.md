@@ -61,6 +61,14 @@ flowchart LR
 
 Every message is a single 38-byte packed `FilterMessage` struct, which fits well within ESP-NOW's 250-byte payload limit.
 
+## Reports
+
+The full write-up for each milestone, with design decisions, serial-monitor evidence and team contributions:
+
+- [Milestone 1: single-node filter and ESP-NOW link](docs/reports/M1_Final_Report.pdf)
+- [Milestone 2: hash-based partitioning, distributed operations, rebalancing](docs/reports/M2_Final_Report.pdf)
+- [Milestone 3, final report: replication, fault tolerance, performance](docs/reports/M3_Final_Report.pdf) ([Word version](docs/reports/M3_Final_Report.docx))
+
 ## Repository layout
 
 ```
@@ -75,6 +83,7 @@ firmware/
   milestone-3/
     cuckoo_m3_master/cuckoo_m3_master.ino   replication, heartbeats, failover, 7-phase benchmark
     cuckoo_m3_slave/cuckoo_m3_slave.ino     replica store, idempotent inserts, heartbeat replies, full sync
+docs/reports/                       milestone reports (PDF)
 docs/images/                        serial-monitor captures from the M3 run
 ```
 

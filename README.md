@@ -28,7 +28,14 @@ A master board hashes every key and routes each operation to the slave that owns
 | LOOKUP, cross-partition (REMOTE_CHECK) | ~90–110 ms |
 | Heartbeat round trip | ~18–22 ms |
 
-Milestone 1 (single node) reached a **92.2% load factor** (944 / 1024 slots) with a 0.00% false-positive rate over 1,000 queries for absent keys.
+### Milestone 1: the single-node filter
+
+| Test | What it checks | Result |
+|---|---|---|
+| Basic correctness | 10 inserts, then 10 lookups | **10 / 10** found |
+| Delete correctness | 5 deletes, then 5 lookups | **5 / 5** correctly gone |
+| False-positive rate | 1,000 lookups for keys never inserted | **0.00%** (threshold < 3%) |
+| Capacity | insert until the filter is full | **944 / 1,024** slots, a **92.2%** load factor |
 
 ## How it works
 
@@ -58,6 +65,10 @@ Every message is a single 38-byte packed `FilterMessage` struct, which fits well
 
 ```
 firmware/
+  milestone-1/
+    master_node/master_node.ino     ESP-NOW link, hashing and routing, insert/lookup/delete/sync cycle
+    slave_node/slave_node.ino       the cuckoo filter: buckets, two-choice insert, kick-out loop, delete, lookup
+    test_harness/test_harness.ino   single-board tests: correctness, delete, false-positive rate, capacity
   milestone-2/
     master_node/master_node.ino     routing, partitioning, add/remove node, retries, 6-phase demo + test harness
     slave_node/slave_node.ino       partition-aware insert / lookup / delete, rebalance, drain
@@ -77,6 +88,8 @@ Use the Milestone 3 pair (`cuckoo_m3_slave` + `cuckoo_m3_master`) for the final 
 2. Paste the slave MACs into the `slaves[]` table in the master sketch, then flash the master and copy its MAC.
 3. Put the master's MAC in `masterMacAddress[]` in the slave sketch and re-flash the slaves.
 4. Open the master's Serial Monitor. The demo phases and benchmark start automatically.
+
+**Just want to try the filter?** Flash `firmware/milestone-1/test_harness/test_harness.ino` onto a single ESP32 and open the Serial Monitor. It runs all four Milestone 1 tests on one board, with no networking needed.
 
 Only two USB data ports? Once a board has been flashed, it only needs power, so a phone charger is enough to run the third node.
 

@@ -63,6 +63,7 @@ firmware/
     slave_node/slave_node.ino       partition-aware insert / lookup / delete, rebalance, drain
   milestone-3/
     cuckoo_m3_master/cuckoo_m3_master.ino   replication, heartbeats, failover, 7-phase benchmark
+    cuckoo_m3_slave/cuckoo_m3_slave.ino     replica store, idempotent inserts, heartbeat replies, full sync
 docs/images/                        serial-monitor captures from the M3 run
 ```
 
@@ -70,7 +71,9 @@ docs/images/                        serial-monitor captures from the M3 run
 
 **You need:** 2–4 ESP32 dev boards (WROOM-32 or similar) and Arduino IDE 2.x with **esp32 by Espressif Systems** v3.x installed from the Boards Manager.
 
-1. Open `slave_node.ino`, set `THIS_NODE_ID` (0, 1 or 2) and flash each slave. Copy the MAC address each one prints at 115200 baud.
+Use the Milestone 3 pair (`cuckoo_m3_slave` + `cuckoo_m3_master`) for the final version, or the Milestone 2 pair for partitioning without replication.
+
+1. Open the slave sketch, set `THIS_NODE_ID` (0, 1 or 2) and flash each slave. Copy the MAC address each one prints at 115200 baud.
 2. Paste the slave MACs into the `slaves[]` table in the master sketch, then flash the master and copy its MAC.
 3. Put the master's MAC in `masterMacAddress[]` in the slave sketch and re-flash the slaves.
 4. Open the master's Serial Monitor. The demo phases and benchmark start automatically.
